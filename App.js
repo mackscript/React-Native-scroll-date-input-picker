@@ -1,7 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {Button, View} from 'react-native';
 
-import DemoPicker from './src/common/DemoPicker';
 import RnDateInputPicker from './src/components';
 
 const App = () => {

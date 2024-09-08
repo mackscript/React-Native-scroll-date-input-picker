@@ -1,4 +1,4 @@
-# react-native-scroll-datepicker-with-textfield
+# rn-wheel-scroll-date-input-picker
 
 A simple and customizable scrollable date picker for React Native, allowing users to input or select dates with a custom text field.
 
@@ -7,36 +7,40 @@ A simple and customizable scrollable date picker for React Native, allowing user
 To install the package, run:
 
 ```bash
-npm install react-native-scroll-datepicker-with-textfield
+npm install rn-wheel-scroll-date-input-picker
 ```
 
 Or using Yarn:
 
 ```bash
-yarn add react-native-scroll-datepicker-with-textfield
+yarn add rn-wheel-scroll-date-input-picker
 ```
 
 ## Usage
 
-Here's how you can use react-native-scroll-datepicker-with-textfield in your project:
+Here's how you can use rn-wheel-scroll-date-input-picker in your project:
 
 ```bash
 import React, { useState } from 'react';
-import { View, Text } from 'react-native';
-import ScrollDatePickerWithTextField from 'react-native-scroll-datepicker-with-textfield';
+import { View, Text, Button } from 'react-native';
+import RnDateInputPicker from 'rn-wheel-scroll-date-input-picker';
 
 const App = () => {
   const [date, setDate] = useState(null);
 
+ const onSelected = d => {
+    console.log('date', d);
+    setDate(d)
+};
+
   return (
     <View>
-      <Text>Select a Date:</Text>
-      <ScrollDatePickerWithTextField
-        selectedDate={date}
-        onDateChange={setDate}
-        placeholder="Select Date"
-        customTextFieldStyle={{ borderBottomColor: 'gray', borderBottomWidth: 1 }}
-        dateFormat="DD/MM/YYYY"
+      <Button title="Select Date" onPress={() => setShowDateModal(true)} />
+       <RnDateInputPicker
+        defaultDate={'2024-08-02'} // yyyy-mm-dd
+        visible={showDateModal} // show Modal
+        closeModal={closeModal} // close Modal
+        onSelected={onSelected} // seleted Date
       />
     </View>
   );

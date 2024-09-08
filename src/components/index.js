@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 import SingelDatePicker from './customDatePicker/SingelDatePicker';
 import SingelMonthPicker from './customDatePicker/SingelMonthPicker';
+import Gradiant from '../common/Gradiant';
 const shortMonthsArray = [
   'Jan',
   'Feb',
@@ -110,6 +111,7 @@ const RnDateInputPicker = ({
         <View style={styles.modalCenterView}>
           <View style={styles.dateContiner}>
             {/* // months // */}
+            <Gradiant />
             <View style={{height: 180, width: 80}}>
               <SingelMonthPicker
                 onValueChange={(data, selectedIndex) => {
@@ -206,9 +208,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
   },
   dateContiner: {
-    justifyContent: 'space-around',
+    justifyContent: 'space-between',
     flexDirection: 'row',
-    padding: 10,
     alignItems: 'center',
   },
 });
