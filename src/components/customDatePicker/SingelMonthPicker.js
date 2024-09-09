@@ -147,7 +147,7 @@ const SingelMonthPicker = forwardRef((props, ref) => {
         setSuggestArry(sugArr);
       } else {
         setSuggestArry([]);
-        onValueChange(0, -1);
+        onValueChange(null, -1);
       }
 
       setSelectedValue(text);

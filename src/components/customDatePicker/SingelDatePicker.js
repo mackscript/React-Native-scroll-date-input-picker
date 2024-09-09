@@ -57,11 +57,9 @@ const SingelDatePicker = forwardRef((props, ref) => {
   const [selectedIndex, setSelectedIndex] = useState(
     propSelectedIndex && propSelectedIndex >= 0 ? propSelectedIndex : 0,
   );
-  const [dataSourcess, setDataSource] = useState(dataSource); // Track the data source state
-  const [selectedValue, setSelectedValue] = useState(
-    dataSourcess[selectedIndex],
-  ); // Track the current selected value
-
+  // const [dataSourcess, setDataSource] = useState(dataSource); // Track the data source state
+  const [selectedValue, setSelectedValue] = useState(dataSource[selectedIndex]); // Track the current selected value
+  const [suggestArray, setSuggestArry] = useState([]);
   const sView = useRef(null);
   const [isScrollTo, setIsScrollTo] = useState(false);
   const [dragStarted, setDragStarted] = useState(false);
@@ -104,40 +102,72 @@ const SingelDatePicker = forwardRef((props, ref) => {
   };
 
   const handleEditSubmit = () => {
-    const newIndex = dataSource.findIndex(item => item === selectedValue);
+    const sugArr = dataSource.filter(month =>
+      month
+        .toLowerCase()
+        .startsWith(
+          selectedValue.toLowerCase() == '' ? 'T' : selectedValue.toLowerCase(),
+        ),
+    );
+    const newIndex = dataSource.findIndex(item => item === sugArr[0]);
     if (newIndex !== -1) {
+      console.log('sugArr[0]', sugArr[0]);
+      setSelectedValue(sugArr[0]);
       setSelectedIndex(newIndex);
+      onValueChange(sugArr[0], newIndex);
       setTimeout(() => {
         const y = itemHeight * newIndex;
         sView.current?.scrollTo({y: y});
       }, 0);
     } else {
+      setTimeout(() => {
+        const y = itemHeight * 0;
+        sView.current?.scrollTo({y: y});
+      }, 0);
+      setSelectedValue(dataSource[0]);
+      onValueChange(dataSource[0], 0);
       setSelectedIndex(0);
     }
   };
-  const handleValueChange = text => {
-    const isValid = dataSource.some(number =>
-      number.toString().startsWith(text),
-    ); // If valid, update state; otherwise, do nothing
-    if (isValid || text === '') {
-      setSelectedValue(text);
-    }
-    //
-    // console.log('newIndex', newIndex);
-    // if (newIndex !== -1) {
-    //   // const updatedDataSource = [...dataSource];
-    //   // updatedDataSource[selectedIndex] = text;
-    //   // setDataSource(updatedDataSource);
-    //   setSelectedIndex(newIndex);
-    //   setSelectedValue(text); // Update the selected value
-    //   if (onValueChange) {
-    //     onValueChange(text, selectedIndex);
-    //   }
-    // } else {
 
-    // }
-    // Update the selected index with new value
-    // Update the state
+  const handleValueChange = text => {
+    const sugArr = dataSource.filter(month =>
+      month
+        .toLowerCase()
+        .startsWith(text.toLowerCase() == '' ? 'T' : text.toLowerCase()),
+    );
+    const isValid = dataSource.some(number =>
+      number.toLowerCase().startsWith(text.toLowerCase()),
+    ); // If valid, update state; otherwise, do nothing
+    if (isValid || text === '' || sugArr.length > 0) {
+      const newIndex = dataSource.findIndex(item => item === sugArr[0]);
+      if (newIndex !== -1) {
+        onValueChange(sugArr[0], newIndex);
+        setSuggestArry(sugArr);
+      } else {
+        setSuggestArry([]);
+        onValueChange(null, -1);
+      }
+
+      setSelectedValue(text);
+    } else {
+      console.log('a');
+    }
+  };
+
+  const makeSpess = (a, b) => {
+    let x = '';
+    if (b?.length > 0) {
+      for (let i = 0; i < b.length; i++) {
+        if (i < a.length && a[i].toLowerCase() === b[i].toLowerCase()) {
+          x += '  ';
+        } else {
+          x += b[i];
+        }
+      }
+    }
+
+    return x;
   };
 
   const renderItemFn = (data, index) => {
@@ -147,19 +177,40 @@ const SingelDatePicker = forwardRef((props, ref) => {
       renderItem(data, index, isSelected)
     ) : (
       <View>
-        <View></View>
         {isSelected ? (
-          <TextInput
-            style={
-              (activeItemTextStyle
-                ? activeItemTextStyle
-                : styles.activeItemTextStyle,
-              {fontWeight: 'bold', fontSize: 17, color: '#fdba74'})
-            }
-            value={selectedValue} // Display the selected value
-            onChangeText={handleValueChange} // Update value on change
-            onSubmitEditing={handleEditSubmit}
-          />
+          <View
+            style={{
+              position: 'relative',
+              // marginLeft: 20,
+              width: '100%',
+            }}>
+            <TextInput
+              style={
+                (activeItemTextStyle
+                  ? activeItemTextStyle
+                  : styles.activeItemTextStyle,
+                {fontWeight: 'bold', fontSize: 17, color: '#fdba74'})
+              }
+              keyboardType="number-pad"
+              value={selectedValue} // Display the selected value
+              onChangeText={handleValueChange} // Update value on change
+              onSubmitEditing={handleEditSubmit}
+            />
+            {/*  */}
+            <Text
+              style={{
+                top: '25%',
+                left: 9,
+                fontSize: 17,
+                fontWeight: 'bold',
+                color: '#e2e8f0',
+                textTransform: 'capitalize',
+                zIndex: -1,
+                position: 'absolute',
+              }}>
+              {makeSpess(selectedValue, suggestArray[0])}
+            </Text>
+          </View>
         ) : (
           <Text style={[itemTextStyle ? itemTextStyle : styles.itemTextStyle]}>
             {data}
@@ -185,7 +236,8 @@ const SingelDatePicker = forwardRef((props, ref) => {
         y = e.nativeEvent.contentOffset.y;
       }
       const _selectedIndex = Math.round(y / h);
-
+      // for suggestArray remove
+      setSuggestArry([]);
       const _y = _selectedIndex * h;
       if (_y !== y) {
         if (Platform.OS === 'ios') {

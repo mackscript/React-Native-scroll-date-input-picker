@@ -115,6 +115,7 @@ const RnDateInputPicker = ({
             <View style={{height: 180, width: 80}}>
               <SingelMonthPicker
                 onValueChange={(data, selectedIndex) => {
+                  console.log('selectedIndex', data);
                   setSingelMonth(String(selectedIndex + 1).padStart(2, '0'));
                 }}
                 selectedIndex={singelMonth - 1}
@@ -128,7 +129,7 @@ const RnDateInputPicker = ({
             <View style={{height: 180, width: 80}}>
               <SingelDatePicker
                 onValueChange={(data, selectedIndex) => {
-                  console.log('data --------', data, selectedIndex);
+                  console.log('selectedIndex', data);
                   setSingelDate(String(data));
                 }}
                 selectedIndex={2}
@@ -142,6 +143,7 @@ const RnDateInputPicker = ({
             <View style={{height: 180, width: 80}}>
               <SingelDatePicker
                 onValueChange={(data, selectedIndex) => {
+                  console.log('selectedIndex', data);
                   setSingelYear(String(data));
                 }}
                 selectedIndex={3}
