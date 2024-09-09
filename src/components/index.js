@@ -115,7 +115,8 @@ const RnDateInputPicker = ({
             <View style={{height: 180, width: 80}}>
               <SingelMonthPicker
                 onValueChange={(data, selectedIndex) => {
-                  setSingelMonth(String(selectedIndex + 1).padStart(2, '0'));
+                  console.log('data month---', data, selectedIndex);
+                  // setSingelMonth(String(selectedIndex + 1).padStart(2, '0'));
                 }}
                 selectedIndex={singelMonth - 1}
                 style={{height: 20}}

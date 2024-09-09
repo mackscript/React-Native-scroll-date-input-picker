@@ -57,11 +57,9 @@ const SingelMonthPicker = forwardRef((props, ref) => {
   const [selectedIndex, setSelectedIndex] = useState(
     propSelectedIndex && propSelectedIndex >= 0 ? propSelectedIndex : 0,
   );
-  const [dataSourcess, setDataSource] = useState(dataSource); // Track the data source state
-  const [selectedValue, setSelectedValue] = useState(
-    dataSourcess[selectedIndex],
-  ); // Track the current selected value
-
+  // const [dataSourcess, setDataSource] = useState(dataSource); // Track the data source state
+  const [selectedValue, setSelectedValue] = useState(dataSource[selectedIndex]); // Track the current selected value
+  const [suggestArray, setSuggestArry] = useState([]);
   const sView = useRef(null);
   const [isScrollTo, setIsScrollTo] = useState(false);
   const [dragStarted, setDragStarted] = useState(false);
@@ -104,69 +102,122 @@ const SingelMonthPicker = forwardRef((props, ref) => {
   };
 
   const handleEditSubmit = () => {
-    const newIndex = dataSource.findIndex(item => item === selectedValue);
+    const sugArr = dataSource.filter(month =>
+      month
+        .toLowerCase()
+        .startsWith(
+          selectedValue.toLowerCase() == '' ? 'T' : selectedValue.toLowerCase(),
+        ),
+    );
+    const newIndex = dataSource.findIndex(item => item === sugArr[0]);
     if (newIndex !== -1) {
+      setSelectedValue(sugArr[0]);
       setSelectedIndex(newIndex);
+      onValueChange(selectedValue, newIndex);
       setTimeout(() => {
         const y = itemHeight * newIndex;
         sView.current?.scrollTo({y: y});
       }, 0);
     } else {
+      setTimeout(() => {
+        const y = itemHeight * 0;
+        sView.current?.scrollTo({y: y});
+      }, 0);
+      setSelectedValue(dataSource[0]);
+      onValueChange(dataSource[0], 0);
       setSelectedIndex(0);
     }
   };
   const handleValueChange = text => {
-    const isValid = dataSource.some(number =>
-      number.toString().startsWith(text),
-    ); // If valid, update state; otherwise, do nothing
-    if (isValid || text === '') {
-      setSelectedValue(text);
-    }
-    //
-    // console.log('newIndex', newIndex);
-    // if (newIndex !== -1) {
-    //   // const updatedDataSource = [...dataSource];
-    //   // updatedDataSource[selectedIndex] = text;
-    //   // setDataSource(updatedDataSource);
-    //   setSelectedIndex(newIndex);
-    //   setSelectedValue(text); // Update the selected value
-    //   if (onValueChange) {
-    //     onValueChange(text, selectedIndex);
-    //   }
-    // } else {
+    // for suggestArray
 
-    // }
-    // Update the selected index with new value
-    // Update the state
+    const sugArr = dataSource.filter(month =>
+      month
+        .toLowerCase()
+        .startsWith(text.toLowerCase() == '' ? 'T' : text.toLowerCase()),
+    );
+    const isValid = dataSource.some(number =>
+      number.toLowerCase().startsWith(text.toLowerCase()),
+    ); // If valid, update state; otherwise, do nothing
+    if (isValid || text === '' || sugArr.length > 0) {
+      const newIndex = dataSource.findIndex(item => item === sugArr[0]);
+      onValueChange(sugArr[0], newIndex);
+      setSuggestArry(sugArr);
+      setSelectedValue(text);
+    } else {
+      console.log('a');
+    }
   };
 
+  // '_un'; /// output
+
+  const makeSpess = (a, b) => {
+    let x = '';
+    if (b?.length > 0) {
+      for (let i = 0; i < b.length; i++) {
+        if (i < a.length && a[i].toLowerCase() === b[i].toLowerCase()) {
+          x += '_';
+        } else {
+          x += b[i];
+        }
+      }
+    }
+    console.log('x', x);
+    return x;
+  };
+
+  // after onchnage find index and set call back
   const renderItemFn = (data, index) => {
     const isSelected = index === selectedIndex;
 
     const item = renderItem ? (
       renderItem(data, index, isSelected)
     ) : (
-      <View>
-        <View></View>
+      <View style={{width: '100%'}}>
         {isSelected ? (
-          <TextInput
-            style={
-              (activeItemTextStyle
-                ? activeItemTextStyle
-                : styles.activeItemTextStyle,
-              {
-                fontWeight: 'bold',
-                textTransform: 'capitalize',
+          <View
+            style={{
+              position: 'relative',
+              marginLeft: 20,
+              width: '100%',
+            }}>
+            <TextInput
+              style={
+                (activeItemTextStyle
+                  ? activeItemTextStyle
+                  : styles.activeItemTextStyle,
+                {
+                  fontWeight: 'bold',
+                  textTransform: 'capitalize',
+                  fontSize: 17,
+                  color: '#fdba74',
+                })
+              }
+              value={selectedValue} // Display the selected value
+              onChangeText={handleValueChange} // Update value on change
+              onSubmitEditing={handleEditSubmit}
+            />
+            <Text
+              style={{
+                top: '25%',
+                left: 10,
                 fontSize: 17,
-                color: '#fdba74',
-              })
-            }
-            value={selectedValue} // Display the selected value
-            onChangeText={handleValueChange} // Update value on change
-            onSubmitEditing={handleEditSubmit}
-          />
+                fontWeight: 'bold',
+                color: '#e2e8f0',
+                textTransform: 'capitalize',
+                zIndex: -1,
+                position: 'absolute',
+              }}>
+              {}
+              {makeSpess(selectedValue, suggestArray[0])}
+            </Text>
+          </View>
         ) : (
-          <Text style={[itemTextStyle ? itemTextStyle : styles.itemTextStyle]}>
+          <Text
+            style={[
+              itemTextStyle ? itemTextStyle : styles.itemTextStyle,
+              {marginLeft: 20},
+            ]}>
             {data}
           </Text>
         )}
@@ -190,7 +241,8 @@ const SingelMonthPicker = forwardRef((props, ref) => {
         y = e.nativeEvent.contentOffset.y;
       }
       const _selectedIndex = Math.round(y / h);
-
+      // for suggestArray remove
+      setSuggestArry([]);
       const _y = _selectedIndex * h;
       if (_y !== y) {
         if (Platform.OS === 'ios') {
