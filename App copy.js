@@ -1,6 +1,7 @@
-import React, {useState} from 'react';
-import {View, Text, Button} from 'react-native';
-import RnDateInputPicker from 'rn-wheel-scroll-date-input-picker';
+import React, {useEffect, useState} from 'react';
+import {Button, View} from 'react-native';
+
+import RnDateInputPicker from './src/components';
 
 const App = () => {
   const [showDateModal, setShowDateModal] = useState(false);
@@ -8,12 +9,10 @@ const App = () => {
   const closeModal = () => {
     setShowDateModal(false);
   };
-
   const onSelected = values => {
+    // setNewDate(date);
     setNewDate(values.date);
   };
-
-  console.log('newdate', newdate);
 
   return (
     <View
@@ -24,7 +23,7 @@ const App = () => {
         backgroundColor: '#fefefe',
       }}>
       <Button
-        title={`${newdate.toDateString()}++++`}
+        title={`${newdate.toDateString()}`}
         onPress={() => setShowDateModal(true)}
       />
       <RnDateInputPicker

@@ -10,7 +10,7 @@ import {
   FlatList,
   Alert,
 } from 'react-native';
-import Gradiant from './Gradiant';
+import Gradiant from '../components/customDatePicker/Gradiant';
 const {height} = Dimensions.get('window');
 const itemHeight = 50;
 const shortMonthsArray = [

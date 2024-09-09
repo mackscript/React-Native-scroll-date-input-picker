@@ -6,13 +6,13 @@ const Gradiant = () => {
   return (
     <View style={[styles.container]}>
       <LinearGradient
-        colors={['rgba(255,255,255,0.5)', 'rgba(255,255,255,0.6)']} // White to trans
+        colors={['rgba(255,255,255,0.8)', 'rgba(255,255,255,0)']} // White to trans
         // colors={['red', 'rgba(255,255,255,0.6)']} // White to transparent
         style={styles.gradientBootom}
       />
       <LinearGradient
         // colors={['red', 'rgba(255,255,255,0.9)']} // Corrected the closing bracket
-        colors={['rgba(255,255,255,0)', 'rgba(255,255,255,0.5)']} // Corrected the closing bracket
+        colors={['rgba(255,255,255,0)', 'rgba(255,255,255,0.8)']} // Corrected the closing bracket
         style={styles.gradientTop}
       />
     </View>
@@ -34,12 +34,13 @@ const styles = StyleSheet.create({
     position: 'absolute',
     left: 0,
     right: 0,
-    bottom: 0,
+    bottom: -10,
     height: 50,
-
     transform: 'rotate(180deg)',
   },
+
   gradientTop: {
+    transform: 'rotate(180deg)',
     position: 'absolute',
     left: 0,
     right: 0,

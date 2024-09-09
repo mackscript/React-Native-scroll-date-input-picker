@@ -8230,6 +8230,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"rn-wheel-scroll-date-input-picker@npm:^1.1.2":
+  version: 1.1.2
+  resolution: "rn-wheel-scroll-date-input-picker@npm:1.1.2"
+  peerDependencies:
+    react: 18.3.1
+    react-native: 0.75.2
+    react-native-linear-gradient: ^2.8.3
+  checksum: eff47548c4b205e634fa9711229d1a1e6f5196817a9dd0c06b8dbc92d14f5a342a6939daaa59c4c0b25d49ff9b1513648ac425c91495157799fb151d74838dd4
+  languageName: node
+  linkType: hard
+
 "rn-wheel-scroll-date-input-picker@workspace:.":
   version: 0.0.0-use.local
   resolution: "rn-wheel-scroll-date-input-picker@workspace:."
@@ -8251,6 +8262,7 @@ __metadata:
     react-native: 0.75.2
     react-native-linear-gradient: ^2.8.3
     react-test-renderer: 18.3.1
+    rn-wheel-scroll-date-input-picker: ^1.1.2
     typescript: 5.0.4
   languageName: unknown
   linkType: soft

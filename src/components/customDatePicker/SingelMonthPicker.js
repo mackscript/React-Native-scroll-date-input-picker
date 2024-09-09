@@ -47,9 +47,10 @@ const SingelMonthPicker = forwardRef((props, ref) => {
     onValueChange,
     renderItem,
     highlightColor = '#333', // Default value
-    highlightBorderWidth = StyleSheet.hairlineWidth, // Default value
+    highlightBorderWidth, // Default value
     itemTextStyle,
     activeItemTextStyle,
+    activeTextColor,
     wrapperHeight: propWrapperHeight,
   } = props;
 
@@ -163,7 +164,7 @@ const SingelMonthPicker = forwardRef((props, ref) => {
     if (b?.length > 0) {
       for (let i = 0; i < b.length; i++) {
         if (i < a.length && a[i].toLowerCase() === b[i].toLowerCase()) {
-          x += '_';
+          x += '*';
         } else {
           x += b[i];
         }
@@ -194,30 +195,43 @@ const SingelMonthPicker = forwardRef((props, ref) => {
                   ? activeItemTextStyle
                   : styles.activeItemTextStyle,
                 {
+                  position: 'absolute',
+                  fontWeight: 'bold',
+                  fontSize: 17,
+                  left: 3,
+                  color: '#e2e8f0',
+                })
+              }
+              value={makeSpess(selectedValue, suggestArray[0])}
+            />
+            <TextInput
+              style={
+                (activeItemTextStyle
+                  ? activeItemTextStyle
+                  : styles.activeItemTextStyle,
+                {
                   fontWeight: 'bold',
                   textTransform: 'capitalize',
                   fontSize: 17,
-                  color: '#fdba74',
+                  color: activeTextColor,
                 })
               }
               value={selectedValue} // Display the selected value
               onChangeText={handleValueChange} // Update value on change
               onSubmitEditing={handleEditSubmit}
             />
-            <Text
+            {/* <Text
               style={{
                 top: '25%',
                 left: 10,
                 fontSize: 17,
                 fontWeight: 'bold',
                 color: '#e2e8f0',
-                textTransform: 'capitalize',
                 zIndex: -1,
                 position: 'absolute',
               }}>
-              {}
               {makeSpess(selectedValue, suggestArray[0])}
-            </Text>
+            </Text> */}
           </View>
         ) : (
           <Text

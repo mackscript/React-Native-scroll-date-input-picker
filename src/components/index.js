@@ -7,9 +7,8 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import SingelDatePicker from './customDatePicker/SingelDatePicker';
 import SingelMonthPicker from './customDatePicker/SingelMonthPicker';
-import Gradiant from '../common/Gradiant';
+import Gradiant from './customDatePicker/Gradiant';
 const shortMonthsArray = [
   'Jan',
   'Feb',
@@ -38,17 +37,6 @@ function logFormattedDate(dateString) {
     year,
   };
 }
-// const generateDaysArray = (month, year) => {
-//   const daysInMonth = new Date(year, month, 0).getDate();
-//   const daysArray = [];
-
-//   for (let day = 1; day <= daysInMonth; day++) {
-//     const date = day;
-//     daysArray.push(`${date}`.padStart(2, '0'));
-//   }
-
-//   return daysArray;
-// };
 const generateDaysArray = (month, year) => {
   console.log('month', month, year);
   // Adjust month by subtracting 1 because month is 0-indexed in Date()
@@ -78,6 +66,8 @@ const RnDateInputPicker = ({
   closeModal = () => {},
   onSelected = () => {},
   lastYear = '1951',
+  activeTextColor = '#000',
+  highlightBorderWidth = StyleSheet.hairlineWidth,
   defaultDate = logFormattedDate(new Date()).formattedDate,
 }) => {
   const [singelMonth, setSingelMonth] = useState();
@@ -155,16 +145,18 @@ const RnDateInputPicker = ({
                     setSingelMonth(String(selectedIndex + 1).padStart(2, '0'));
                   }
                 }}
+                activeTextColor={activeTextColor}
                 selectedIndex={singelMonth - 1}
                 style={{height: 20}}
                 wrapperHeight={180}
                 itemHeight={60}
+                highlightBorderWidth={highlightBorderWidth}
                 dataSource={shortMonthsArray}
               />
             </View>
             {/* // Dates // */}
             <View style={{height: 180, width: 80}}>
-              <SingelDatePicker
+              <SingelMonthPicker
                 onValueChange={(data, selectedIndex) => {
                   if (data !== null) {
                     setSingelDate(String(data));
@@ -172,14 +164,16 @@ const RnDateInputPicker = ({
                 }}
                 selectedIndex={giveMeIndex('date')}
                 style={{height: 20}}
+                activeTextColor={activeTextColor}
                 wrapperHeight={180}
                 itemHeight={60}
                 dataSource={totalDateInMonth}
+                highlightBorderWidth={highlightBorderWidth}
               />
             </View>
             {/* // Year // */}
             <View style={{height: 180, width: 80}}>
-              <SingelDatePicker
+              <SingelMonthPicker
                 onValueChange={(data, selectedIndex) => {
                   if (data !== null) {
                     setSingelYear(String(data));
@@ -188,7 +182,9 @@ const RnDateInputPicker = ({
                 selectedIndex={giveMeIndex('year')}
                 style={{height: 20}}
                 wrapperHeight={180}
+                activeTextColor={activeTextColor}
                 itemHeight={60}
+                highlightBorderWidth={highlightBorderWidth}
                 dataSource={totalYear}
               />
             </View>
@@ -197,12 +193,26 @@ const RnDateInputPicker = ({
             <TouchableOpacity
               style={styles.closeBtn}
               onPress={() => closeDateModal()}>
-              <Text style={styles.modalText}>Cancel</Text>
+              <Text
+                style={{
+                  fontWeight: 'bold',
+                  fontSize: 18,
+                  color: activeTextColor,
+                }}>
+                Cancel
+              </Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.closeBtn}
               onPress={() => confrimDate()}>
-              <Text style={styles.modalText}>Set</Text>
+              <Text
+                style={{
+                  fontWeight: 'bold',
+                  fontSize: 18,
+                  color: activeTextColor,
+                }}>
+                Set
+              </Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -233,11 +243,7 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 5,
   },
-  modalText: {
-    fontWeight: 'bold',
-    fontSize: 18,
-    color: '#fdba74',
-  },
+
   btnGroup: {
     marginTop: 8,
     flexDirection: 'row',
@@ -250,6 +256,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
   },
   dateContiner: {
+    padding: 6,
     justifyContent: 'space-between',
     flexDirection: 'row',
     alignItems: 'center',

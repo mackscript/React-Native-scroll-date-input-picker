@@ -24,7 +24,7 @@ const App = () => {
         backgroundColor: '#fefefe',
       }}>
       <Button
-        title={`${newdate.toDateString()}++++`}
+        title={`${newdate.toDateString()}`}
         onPress={() => setShowDateModal(true)}
       />
       <RnDateInputPicker
