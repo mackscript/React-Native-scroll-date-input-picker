@@ -111,9 +111,10 @@ const SingelMonthPicker = forwardRef((props, ref) => {
     );
     const newIndex = dataSource.findIndex(item => item === sugArr[0]);
     if (newIndex !== -1) {
+      console.log('sugArr[0]', sugArr[0]);
       setSelectedValue(sugArr[0]);
       setSelectedIndex(newIndex);
-      onValueChange(selectedValue, newIndex);
+      onValueChange(sugArr[0], newIndex);
       setTimeout(() => {
         const y = itemHeight * newIndex;
         sView.current?.scrollTo({y: y});
@@ -141,8 +142,14 @@ const SingelMonthPicker = forwardRef((props, ref) => {
     ); // If valid, update state; otherwise, do nothing
     if (isValid || text === '' || sugArr.length > 0) {
       const newIndex = dataSource.findIndex(item => item === sugArr[0]);
-      onValueChange(sugArr[0], newIndex);
-      setSuggestArry(sugArr);
+      if (newIndex !== -1) {
+        onValueChange(sugArr[0], newIndex);
+        setSuggestArry(sugArr);
+      } else {
+        setSuggestArry([]);
+        onValueChange(0, -1);
+      }
+
       setSelectedValue(text);
     } else {
       console.log('a');
@@ -162,7 +169,7 @@ const SingelMonthPicker = forwardRef((props, ref) => {
         }
       }
     }
-    console.log('x', x);
+
     return x;
   };
 
