@@ -5,11 +5,13 @@ import RnDateInputPicker from './src/components';
 
 const App = () => {
   const [showDateModal, setShowDateModal] = useState(false);
+  const [newdate, setNewDate] = useState(new Date());
   const closeModal = () => {
     setShowDateModal(false);
   };
-  const onSelected = date => {
-    console.log('date nice date', date);
+  const onSelected = values => {
+    // setNewDate(date);
+    setNewDate(values.date);
   };
   return (
     <View
@@ -19,20 +21,17 @@ const App = () => {
         alignItems: 'center',
         backgroundColor: '#fefefe',
       }}>
-      <Button title="Select Date" onPress={() => setShowDateModal(true)} />
+      <Button
+        title={`${newdate.toDateString()}`}
+        onPress={() => setShowDateModal(true)}
+      />
       <RnDateInputPicker
-        // defaultDate={'2024-08-02'} // yyyy-mm-dd
+        lastYear="1900"
+        defaultDate={newdate} // 2024-09-09T11:33:40.097Z
         visible={showDateModal} // show Modal
         closeModal={closeModal} // close Modal
         onSelected={onSelected} // seleted Date
       />
-      {/* <DemoPicker
-        lastYear={'1900'}
-        // YYYY-MM-DD
-        visible={showDateModal} // show Modal
-        closeModal={closeModal} // close Modal
-        onSelected={onSelected} // seleted Date
-      /> */}
     </View>
   );
 };

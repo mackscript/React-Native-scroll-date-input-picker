@@ -38,13 +38,26 @@ function logFormattedDate(dateString) {
     year,
   };
 }
+// const generateDaysArray = (month, year) => {
+//   const daysInMonth = new Date(year, month, 0).getDate();
+//   const daysArray = [];
+
+//   for (let day = 1; day <= daysInMonth; day++) {
+//     const date = day;
+//     daysArray.push(`${date}`.padStart(2, '0'));
+//   }
+
+//   return daysArray;
+// };
 const generateDaysArray = (month, year) => {
-  const daysInMonth = new Date(year, month, 0).getDate();
+  console.log('month', month, year);
+  // Adjust month by subtracting 1 because month is 0-indexed in Date()
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
   const daysArray = [];
 
   for (let day = 1; day <= daysInMonth; day++) {
     const date = day;
-    daysArray.push(`${date}`.padStart(2, '0'));
+    daysArray.push(`${date}`.padStart(2, '0')); // Adding leading zeros
   }
 
   return daysArray;
@@ -64,12 +77,14 @@ const RnDateInputPicker = ({
   visible = false,
   closeModal = () => {},
   onSelected = () => {},
-  lastYear = '2004',
+  lastYear = '1951',
   defaultDate = logFormattedDate(new Date()).formattedDate,
 }) => {
   const [singelMonth, setSingelMonth] = useState();
+
   const [singelDate, setSingelDate] = useState();
   const [singelYear, setSingelYear] = useState();
+
   const [totalDateInMonth, setTotalDateInMonth] = useState([]);
   const [totalYear, setTotalYear] = useState([]);
 
@@ -79,26 +94,47 @@ const RnDateInputPicker = ({
     setSingelYear(logFormattedDate(defaultDate).year);
     const allNewArray = generateYearsArray(lastYear);
     setTotalYear(allNewArray);
-  }, [defaultDate]);
+  }, [defaultDate, lastYear]);
 
   useEffect(() => {
-    const daysArray = generateDaysArray(singelMonth, singelMonth);
+    const daysArray = generateDaysArray(singelMonth - 1, singelYear);
     setTotalDateInMonth(daysArray);
   }, [singelYear, singelMonth]);
+
+  const giveMeIndex = type => {
+    if (type == 'date') {
+      const newIndex = totalDateInMonth.findIndex(
+        item => item === logFormattedDate(defaultDate).day,
+      );
+      return newIndex;
+    } else {
+      const newIndex = totalYear.findIndex(
+        item => item == logFormattedDate(defaultDate).year,
+      );
+      return newIndex;
+    }
+  };
 
   const closeDateModal = () => {
     closeModal();
   };
 
   const confrimDate = () => {
-    Alert.alert('Alert Title', `${singelDate}-${singelMonth}-${singelYear}`, [
-      {
-        text: 'Cancel',
-        onPress: () => console.log('nice '),
-        style: 'cancel',
-      },
-      {text: 'OK', onPress: () => closeModal()},
-    ]);
+    onSelected({
+      date: new Date(`${singelYear}-${singelMonth}-${singelDate}`),
+      day: singelDate,
+      month: singelMonth,
+      year: singelYear,
+    });
+    closeModal();
+    // Alert.alert('Alert Title', `${singelDate}-${singelMonth}-${singelYear}`, [
+    //   {
+    //     text: 'Cancel',
+    //     onPress: () => console.log('nice '),
+    //     style: 'cancel',
+    //   },
+    //   {text: 'OK', onPress: () => closeModal()},
+    // ]);
   };
 
   return (
@@ -115,8 +151,9 @@ const RnDateInputPicker = ({
             <View style={{height: 180, width: 80}}>
               <SingelMonthPicker
                 onValueChange={(data, selectedIndex) => {
-                  console.log('selectedIndex', data);
-                  setSingelMonth(String(selectedIndex + 1).padStart(2, '0'));
+                  if (data !== null) {
+                    setSingelMonth(String(selectedIndex + 1).padStart(2, '0'));
+                  }
                 }}
                 selectedIndex={singelMonth - 1}
                 style={{height: 20}}
@@ -129,10 +166,11 @@ const RnDateInputPicker = ({
             <View style={{height: 180, width: 80}}>
               <SingelDatePicker
                 onValueChange={(data, selectedIndex) => {
-                  console.log('selectedIndex', data);
-                  setSingelDate(String(data));
+                  if (data !== null) {
+                    setSingelDate(String(data));
+                  }
                 }}
-                selectedIndex={2}
+                selectedIndex={giveMeIndex('date')}
                 style={{height: 20}}
                 wrapperHeight={180}
                 itemHeight={60}
@@ -143,10 +181,11 @@ const RnDateInputPicker = ({
             <View style={{height: 180, width: 80}}>
               <SingelDatePicker
                 onValueChange={(data, selectedIndex) => {
-                  console.log('selectedIndex', data);
-                  setSingelYear(String(data));
+                  if (data !== null) {
+                    setSingelYear(String(data));
+                  }
                 }}
-                selectedIndex={3}
+                selectedIndex={giveMeIndex('year')}
                 style={{height: 20}}
                 wrapperHeight={180}
                 itemHeight={60}
