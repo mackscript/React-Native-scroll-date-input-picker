@@ -1,14 +1,17 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {
   Alert,
+  Dimensions,
+  Keyboard,
   Modal,
+  ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
 } from 'react-native';
-import SingelMonthPicker from './customDatePicker/SingelMonthPicker';
-import Gradiant from './customDatePicker/Gradiant';
+import SingelDatePicker from './SingelDatePicker';
+import Gradiant from './Gradiant';
 const shortMonthsArray = [
   'Jan',
   'Feb',
@@ -67,9 +70,12 @@ const RnDateInputPicker = ({
   onSelected = () => {},
   lastYear = '1951',
   activeTextColor = '#000',
+  btnColor = '#000',
   highlightBorderWidth = StyleSheet.hairlineWidth,
   defaultDate = logFormattedDate(new Date()).formattedDate,
 }) => {
+  const childRef = useRef(null);
+
   const [singelMonth, setSingelMonth] = useState();
 
   const [singelDate, setSingelDate] = useState();
@@ -109,6 +115,13 @@ const RnDateInputPicker = ({
     closeModal();
   };
 
+  const handlePress = () => {
+    Keyboard.dismiss();
+    if (childRef.current) {
+      childRef.current.triggerSubmit();
+    }
+  };
+
   const confrimDate = () => {
     onSelected({
       date: new Date(`${singelYear}-${singelMonth}-${singelDate}`),
@@ -117,14 +130,6 @@ const RnDateInputPicker = ({
       year: singelYear,
     });
     closeModal();
-    // Alert.alert('Alert Title', `${singelDate}-${singelMonth}-${singelYear}`, [
-    //   {
-    //     text: 'Cancel',
-    //     onPress: () => console.log('nice '),
-    //     style: 'cancel',
-    //   },
-    //   {text: 'OK', onPress: () => closeModal()},
-    // ]);
   };
 
   return (
@@ -133,13 +138,17 @@ const RnDateInputPicker = ({
       visible={visible}
       transparent={true}
       onRequestClose={() => closeModal()}>
-      <View style={styles.modalContainer}>
+      <TouchableOpacity
+        activeOpacity={1}
+        onPress={handlePress}
+        style={styles.modalContainer}>
         <View style={styles.modalCenterView}>
           <View style={styles.dateContiner}>
             {/* // months // */}
             <Gradiant />
             <View style={{height: 180, width: 80}}>
-              <SingelMonthPicker
+              <SingelDatePicker
+                ref={childRef}
                 onValueChange={(data, selectedIndex) => {
                   if (data !== null) {
                     setSingelMonth(String(selectedIndex + 1).padStart(2, '0'));
@@ -156,7 +165,8 @@ const RnDateInputPicker = ({
             </View>
             {/* // Dates // */}
             <View style={{height: 180, width: 80}}>
-              <SingelMonthPicker
+              <SingelDatePicker
+                ref={childRef}
                 onValueChange={(data, selectedIndex) => {
                   if (data !== null) {
                     setSingelDate(String(data));
@@ -173,7 +183,8 @@ const RnDateInputPicker = ({
             </View>
             {/* // Year // */}
             <View style={{height: 180, width: 80}}>
-              <SingelMonthPicker
+              <SingelDatePicker
+                ref={childRef}
                 onValueChange={(data, selectedIndex) => {
                   if (data !== null) {
                     setSingelYear(String(data));
@@ -197,7 +208,7 @@ const RnDateInputPicker = ({
                 style={{
                   fontWeight: 'bold',
                   fontSize: 18,
-                  color: activeTextColor,
+                  color: btnColor,
                 }}>
                 Cancel
               </Text>
@@ -209,14 +220,14 @@ const RnDateInputPicker = ({
                 style={{
                   fontWeight: 'bold',
                   fontSize: 18,
-                  color: activeTextColor,
+                  color: btnColor,
                 }}>
                 Set
               </Text>
             </TouchableOpacity>
           </View>
         </View>
-      </View>
+      </TouchableOpacity>
     </Modal>
   );
 };

@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {Button, View} from 'react-native';
 
-import RnDateInputPicker from './src/components';
+import RnDateInputPicker from './src/components/customDatePicker';
 
 const App = () => {
   const [showDateModal, setShowDateModal] = useState(false);

@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import {View, Text, Button} from 'react-native';
-import RnDateInputPicker from 'rn-wheel-scroll-date-input-picker';
+import RnDateInputPicker from './src/components/customDatePicker';
 
 const App = () => {
   const [showDateModal, setShowDateModal] = useState(false);
@@ -24,10 +24,12 @@ const App = () => {
         backgroundColor: '#fefefe',
       }}>
       <Button
-        title={`${newdate.toDateString()}++++`}
+        title={`${newdate.toDateString()}`}
         onPress={() => setShowDateModal(true)}
       />
       <RnDateInputPicker
+        btnColor="blue"
+        activeTextColor="red"
         lastYear="1900"
         defaultDate={newdate} // 2024-09-09T11:33:40.097Z
         visible={showDateModal} // show Modal

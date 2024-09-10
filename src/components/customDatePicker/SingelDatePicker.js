@@ -37,7 +37,7 @@ const isViewStyle = style => {
   );
 };
 
-const SingelDatePicker = forwardRef((props, ref) => {
+const SingelMonthPicker = forwardRef((props, ref) => {
   const {
     itemHeight = 30,
     style,
@@ -47,9 +47,11 @@ const SingelDatePicker = forwardRef((props, ref) => {
     onValueChange,
     renderItem,
     highlightColor = '#333', // Default value
-    highlightBorderWidth = StyleSheet.hairlineWidth, // Default value
+    highlightBorderWidth, // Default value
     itemTextStyle,
     activeItemTextStyle,
+    activeTextColor,
+
     wrapperHeight: propWrapperHeight,
   } = props;
 
@@ -129,8 +131,9 @@ const SingelDatePicker = forwardRef((props, ref) => {
       setSelectedIndex(0);
     }
   };
-
   const handleValueChange = text => {
+    // for suggestArray
+
     const sugArr = dataSource.filter(month =>
       month
         .toLowerCase()
@@ -160,7 +163,7 @@ const SingelDatePicker = forwardRef((props, ref) => {
     if (b?.length > 0) {
       for (let i = 0; i < b.length; i++) {
         if (i < a.length && a[i].toLowerCase() === b[i].toLowerCase()) {
-          x += '  ';
+          x += ' ';
         } else {
           x += b[i];
         }
@@ -169,6 +172,9 @@ const SingelDatePicker = forwardRef((props, ref) => {
 
     return x;
   };
+  useImperativeHandle(ref, () => ({
+    triggerSubmit: handleEditSubmit,
+  }));
 
   const renderItemFn = (data, index) => {
     const isSelected = index === selectedIndex;
@@ -176,43 +182,105 @@ const SingelDatePicker = forwardRef((props, ref) => {
     const item = renderItem ? (
       renderItem(data, index, isSelected)
     ) : (
-      <View>
+      <View style={{width: '100%'}}>
         {isSelected ? (
           <View
             style={{
               position: 'relative',
-              // marginLeft: 20,
+              marginLeft: 20,
               width: '100%',
             }}>
             <TextInput
+              selectTextOnFocus={true}
               style={
                 (activeItemTextStyle
                   ? activeItemTextStyle
                   : styles.activeItemTextStyle,
-                {fontWeight: 'bold', fontSize: 17, color: '#fdba74'})
+                {
+                  fontWeight: 'bold',
+                  textTransform: 'capitalize',
+                  fontSize: 17,
+                  color: activeTextColor,
+                })
               }
-              keyboardType="number-pad"
-              value={selectedValue} // Display the selected value
-              onChangeText={handleValueChange} // Update value on change
+              value={selectedValue}
+              onChangeText={handleValueChange}
               onSubmitEditing={handleEditSubmit}
             />
-            {/*  */}
-            <Text
-              style={{
-                top: '25%',
-                left: 9,
-                fontSize: 17,
-                fontWeight: 'bold',
-                color: '#e2e8f0',
-                textTransform: 'capitalize',
-                zIndex: -1,
-                position: 'absolute',
-              }}>
-              {makeSpess(selectedValue, suggestArray[0])}
-            </Text>
+            {selectedValue.toLowerCase() == 'm' ||
+            selectedValue.toLowerCase() == 'a' ? (
+              <Text
+                style={{
+                  top: '25%',
+                  left: 12,
+                  fontSize: 17,
+                  fontWeight: 'bold',
+                  color: activeTextColor,
+                  zIndex: -1,
+                  position: 'absolute',
+                }}>
+                {makeSpess(selectedValue, suggestArray[0])}
+              </Text>
+            ) : selectedValue.toLowerCase() == 'ma' ? (
+              <Text
+                style={{
+                  top: '25%',
+                  left: 18,
+                  fontSize: 17,
+                  fontWeight: 'bold',
+                  color: activeTextColor,
+                  zIndex: -1,
+                  position: 'absolute',
+                }}>
+                {makeSpess(selectedValue, suggestArray[0])}
+              </Text>
+            ) : /^\s{1}\S/.test(makeSpess(selectedValue, suggestArray[0])) ? (
+              <Text
+                style={{
+                  top: '25%',
+                  left: 8,
+                  fontSize: 17,
+                  fontWeight: 'bold',
+                  color: activeTextColor,
+                  zIndex: -1,
+                  position: 'absolute',
+                }}>
+                {makeSpess(selectedValue, suggestArray[0])}
+              </Text>
+            ) : /^\s{2}\S/.test(makeSpess(selectedValue, suggestArray[0])) ? (
+              <Text
+                style={{
+                  top: '25%',
+                  left: 14,
+                  fontSize: 17,
+                  fontWeight: 'bold',
+                  color: activeTextColor,
+                  zIndex: -1,
+                  position: 'absolute',
+                }}>
+                {makeSpess(selectedValue, suggestArray[0])}
+              </Text>
+            ) : (
+              <Text
+                style={{
+                  top: '25%',
+                  left: 18,
+                  fontSize: 17,
+                  fontWeight: 'bold',
+                  color: activeTextColor,
+                  zIndex: -1,
+                  position: 'absolute',
+                }}>
+                {makeSpess(selectedValue, suggestArray[0])}
+              </Text>
+            )}
           </View>
         ) : (
-          <Text style={[itemTextStyle ? itemTextStyle : styles.itemTextStyle]}>
+          <Text
+            style={[
+              itemTextStyle ? itemTextStyle : styles.itemTextStyle,
+              {marginLeft: 20},
+            ]}>
             {data}
           </Text>
         )}
@@ -300,7 +368,6 @@ const SingelDatePicker = forwardRef((props, ref) => {
   const wrapperStyle = {
     height: wrapperHeight,
     flex: 1,
-
     overflow: 'hidden',
   };
 
@@ -338,7 +405,7 @@ const SingelDatePicker = forwardRef((props, ref) => {
   );
 });
 
-export default SingelDatePicker;
+export default SingelMonthPicker;
 
 const styles = StyleSheet.create({
   itemWrapper: {
