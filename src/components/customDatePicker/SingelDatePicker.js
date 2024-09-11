@@ -51,7 +51,7 @@ const SingelMonthPicker = forwardRef((props, ref) => {
     itemTextStyle,
     activeItemTextStyle,
     activeTextColor,
-
+    keyboardType,
     wrapperHeight: propWrapperHeight,
   } = props;
 
@@ -175,7 +175,9 @@ const SingelMonthPicker = forwardRef((props, ref) => {
   useImperativeHandle(ref, () => ({
     triggerSubmit: handleEditSubmit,
   }));
-
+  const handleBlur = () => {
+    handleEditSubmit();
+  };
   const renderItemFn = (data, index) => {
     const isSelected = index === selectedIndex;
 
@@ -203,19 +205,33 @@ const SingelMonthPicker = forwardRef((props, ref) => {
                   color: activeTextColor,
                 })
               }
+              onBlur={handleBlur}
+              keyboardType={keyboardType}
               value={selectedValue}
               onChangeText={handleValueChange}
               onSubmitEditing={handleEditSubmit}
             />
-            {selectedValue.toLowerCase() == 'm' ||
-            selectedValue.toLowerCase() == 'a' ? (
+            {selectedValue.toLowerCase() == 'm' ? (
+              <Text
+                style={{
+                  top: '25%',
+                  left: 14,
+                  fontSize: 17,
+                  fontWeight: 'bold',
+                  color: '#9ca3af',
+                  zIndex: -1,
+                  position: 'absolute',
+                }}>
+                {makeSpess(selectedValue, suggestArray[0])}
+              </Text>
+            ) : selectedValue.toLowerCase() == 'a' ? (
               <Text
                 style={{
                   top: '25%',
                   left: 12,
                   fontSize: 17,
                   fontWeight: 'bold',
-                  color: activeTextColor,
+                  color: '#9ca3af',
                   zIndex: -1,
                   position: 'absolute',
                 }}>
@@ -225,10 +241,51 @@ const SingelMonthPicker = forwardRef((props, ref) => {
               <Text
                 style={{
                   top: '25%',
-                  left: 18,
+                  left: 20,
                   fontSize: 17,
                   fontWeight: 'bold',
-                  color: activeTextColor,
+                  color: '#9ca3af',
+                  zIndex: -1,
+                  position: 'absolute',
+                }}>
+                {makeSpess(selectedValue, suggestArray[0])}
+              </Text>
+            ) : selectedValue.toLowerCase() == 'au' ? (
+              <Text
+                style={{
+                  top: '25%',
+                  left: 17,
+                  fontSize: 17,
+                  fontWeight: 'bold',
+                  color: '#9ca3af',
+                  zIndex: -1,
+                  position: 'absolute',
+                }}>
+                {makeSpess(selectedValue, suggestArray[0])}
+              </Text>
+            ) : selectedValue.toLowerCase() == 'ap' ? (
+              <Text
+                style={{
+                  top: '25%',
+                  left: 16,
+                  fontSize: 17,
+                  fontWeight: 'bold',
+                  color: '#9ca3af',
+                  zIndex: -1,
+                  position: 'absolute',
+                }}>
+                {makeSpess(selectedValue, suggestArray[0])}
+              </Text>
+            ) : selectedValue.toLowerCase() == 'oc' ||
+              selectedValue.toLowerCase() == 'no' ||
+              selectedValue.toLowerCase() == 'de' ? (
+              <Text
+                style={{
+                  top: '25%',
+                  left: 16,
+                  fontSize: 17,
+                  fontWeight: 'bold',
+                  color: '#9ca3af',
                   zIndex: -1,
                   position: 'absolute',
                 }}>
@@ -238,10 +295,10 @@ const SingelMonthPicker = forwardRef((props, ref) => {
               <Text
                 style={{
                   top: '25%',
-                  left: 8,
+                  left: 10,
                   fontSize: 17,
                   fontWeight: 'bold',
-                  color: activeTextColor,
+                  color: '#9ca3af',
                   zIndex: -1,
                   position: 'absolute',
                 }}>
@@ -254,7 +311,7 @@ const SingelMonthPicker = forwardRef((props, ref) => {
                   left: 14,
                   fontSize: 17,
                   fontWeight: 'bold',
-                  color: activeTextColor,
+                  color: '#9ca3af',
                   zIndex: -1,
                   position: 'absolute',
                 }}>
@@ -264,10 +321,10 @@ const SingelMonthPicker = forwardRef((props, ref) => {
               <Text
                 style={{
                   top: '25%',
-                  left: 18,
+                  left: 20,
                   fontSize: 17,
                   fontWeight: 'bold',
-                  color: activeTextColor,
+                  color: '#9ca3af',
                   zIndex: -1,
                   position: 'absolute',
                 }}>

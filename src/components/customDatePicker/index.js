@@ -8,6 +8,7 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
+  TouchableWithoutFeedback,
   View,
 } from 'react-native';
 import SingelDatePicker from './SingelDatePicker';
@@ -138,96 +139,102 @@ const RnDateInputPicker = ({
       visible={visible}
       transparent={true}
       onRequestClose={() => closeModal()}>
-      <TouchableOpacity
-        activeOpacity={1}
-        onPress={handlePress}
-        style={styles.modalContainer}>
-        <View style={styles.modalCenterView}>
-          <View style={styles.dateContiner}>
-            {/* // months // */}
-            <Gradiant />
-            <View style={{height: 180, width: 80}}>
-              <SingelDatePicker
-                ref={childRef}
-                onValueChange={(data, selectedIndex) => {
-                  if (data !== null) {
-                    setSingelMonth(String(selectedIndex + 1).padStart(2, '0'));
-                  }
-                }}
-                activeTextColor={activeTextColor}
-                selectedIndex={singelMonth - 1}
-                style={{height: 20}}
-                wrapperHeight={180}
-                itemHeight={60}
-                highlightBorderWidth={highlightBorderWidth}
-                dataSource={shortMonthsArray}
-              />
+      <TouchableWithoutFeedback onPress={handlePress}>
+        <View activeOpacity={1} style={styles.modalContainer}>
+          <TouchableWithoutFeedback onPress={handlePress}>
+            <View style={styles.modalCenterView}>
+              <View style={styles.dateContiner}>
+                {/* // months // */}
+                <Gradiant />
+                <View style={{height: 180, width: 80}}>
+                  <SingelDatePicker
+                    ref={childRef}
+                    onValueChange={(data, selectedIndex) => {
+                      if (data !== null) {
+                        setSingelMonth(
+                          String(selectedIndex + 1).padStart(2, '0'),
+                        );
+                      }
+                    }}
+                    keyboardType={'default'}
+                    activeTextColor={activeTextColor}
+                    selectedIndex={singelMonth - 1}
+                    style={{height: 20}}
+                    wrapperHeight={180}
+                    itemHeight={60}
+                    highlightBorderWidth={highlightBorderWidth}
+                    dataSource={shortMonthsArray}
+                  />
+                </View>
+                {/* // Dates // */}
+                <View style={{height: 180, width: 80}}>
+                  <SingelDatePicker
+                    ref={childRef}
+                    onValueChange={(data, selectedIndex) => {
+                      if (data !== null) {
+                        setSingelDate(String(data));
+                      }
+                    }}
+                    keyboardType={'number-pad'}
+                    selectedIndex={giveMeIndex('date')}
+                    style={{height: 20}}
+                    activeTextColor={activeTextColor}
+                    wrapperHeight={180}
+                    itemHeight={60}
+                    dataSource={totalDateInMonth}
+                    highlightBorderWidth={highlightBorderWidth}
+                  />
+                </View>
+                {/* // Year // */}
+                <View style={{height: 180, width: 80}}>
+                  <SingelDatePicker
+                    ref={childRef}
+                    onValueChange={(data, selectedIndex) => {
+                      if (data !== null) {
+                        setSingelYear(String(data));
+                      }
+                    }}
+                    keyboardType={'number-pad'}
+                    selectedIndex={giveMeIndex('year')}
+                    style={{height: 20}}
+                    wrapperHeight={180}
+                    activeTextColor={activeTextColor}
+                    itemHeight={60}
+                    highlightBorderWidth={highlightBorderWidth}
+                    dataSource={totalYear}
+                  />
+                </View>
+              </View>
+              <View style={styles.btnGroup}>
+                <TouchableOpacity
+                  style={styles.closeBtn}
+                  onPress={() => closeDateModal()}>
+                  <Text
+                    style={{
+                      fontWeight: 'bold',
+                      fontSize: 18,
+                      color: btnColor,
+                    }}>
+                    Cancel
+                  </Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.closeBtn}
+                  onPress={() => confrimDate()}>
+                  <Text
+                    style={{
+                      fontWeight: 'bold',
+                      fontSize: 18,
+                      color: btnColor,
+                    }}>
+                    Set
+                  </Text>
+                </TouchableOpacity>
+              </View>
             </View>
-            {/* // Dates // */}
-            <View style={{height: 180, width: 80}}>
-              <SingelDatePicker
-                ref={childRef}
-                onValueChange={(data, selectedIndex) => {
-                  if (data !== null) {
-                    setSingelDate(String(data));
-                  }
-                }}
-                selectedIndex={giveMeIndex('date')}
-                style={{height: 20}}
-                activeTextColor={activeTextColor}
-                wrapperHeight={180}
-                itemHeight={60}
-                dataSource={totalDateInMonth}
-                highlightBorderWidth={highlightBorderWidth}
-              />
-            </View>
-            {/* // Year // */}
-            <View style={{height: 180, width: 80}}>
-              <SingelDatePicker
-                ref={childRef}
-                onValueChange={(data, selectedIndex) => {
-                  if (data !== null) {
-                    setSingelYear(String(data));
-                  }
-                }}
-                selectedIndex={giveMeIndex('year')}
-                style={{height: 20}}
-                wrapperHeight={180}
-                activeTextColor={activeTextColor}
-                itemHeight={60}
-                highlightBorderWidth={highlightBorderWidth}
-                dataSource={totalYear}
-              />
-            </View>
-          </View>
-          <View style={styles.btnGroup}>
-            <TouchableOpacity
-              style={styles.closeBtn}
-              onPress={() => closeDateModal()}>
-              <Text
-                style={{
-                  fontWeight: 'bold',
-                  fontSize: 18,
-                  color: btnColor,
-                }}>
-                Cancel
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.closeBtn}
-              onPress={() => confrimDate()}>
-              <Text
-                style={{
-                  fontWeight: 'bold',
-                  fontSize: 18,
-                  color: btnColor,
-                }}>
-                Set
-              </Text>
-            </TouchableOpacity>
-          </View>
+          </TouchableWithoutFeedback>
         </View>
-      </TouchableOpacity>
+      </TouchableWithoutFeedback>
     </Modal>
   );
 };
@@ -241,6 +248,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   modalCenterView: {
+    pointerEvents: 'box-none',
     width: '80%',
     backgroundColor: 'white',
     borderRadius: 6,

@@ -13,8 +13,6 @@ const App = () => {
     setNewDate(values.date);
   };
 
-  console.log('newdate', newdate);
-
   return (
     <View
       style={{
