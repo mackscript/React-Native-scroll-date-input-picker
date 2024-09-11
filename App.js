@@ -1,6 +1,7 @@
 import React, {useState} from 'react';
 import {View, Text, Button} from 'react-native';
 import RnDateInputPicker from './src/components/customDatePicker';
+import TarotsCards from './src/components/TarotCards/TarotsCards';
 
 const App = () => {
   const [showDateModal, setShowDateModal] = useState(false);
@@ -13,15 +14,18 @@ const App = () => {
     setNewDate(values.date);
   };
 
+  console.log('newdate', newdate);
+
   return (
     <View
       style={{
         flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
+        // justifyContent: 'center',
+        // alignItems: 'center',
         backgroundColor: '#fefefe',
       }}>
-      <Button
+      <TarotsCards />
+      {/* <Button
         title={`${newdate.toDateString()}`}
         onPress={() => setShowDateModal(true)}
       />
@@ -33,7 +37,7 @@ const App = () => {
         visible={showDateModal} // show Modal
         closeModal={closeModal} // close Modal
         onSelected={onSelected} // seleted Date
-      />
+      /> */}
     </View>
   );
 };
