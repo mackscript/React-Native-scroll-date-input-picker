@@ -74,6 +74,13 @@ function TarotWhile({cards}) {
   const angel = useDerivedValue(() => {
     return distance.value / circleCircumPerence;
   });
+
+  const interpolatedIndex = useDerivedValue(() => {
+    const x = Math.abs((angel.value % TWO_PI) / theta);
+    return x;
+  });
+
+  console.log('interpolatedIndex', interpolatedIndex);
   const gesture = Gesture.Pan()
     .onChange(ev => {
       distance.value += ev.changeX * changeFector;
