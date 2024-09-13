@@ -1,77 +1,136 @@
-import React, {Component} from 'react';
-import {View, Text, SafeAreaView} from 'react-native';
-import Carousel, {Pagination} from './src/index';
+import React from 'react';
+import {View, Text, Dimensions, Image} from 'react-native';
+import {
+  Gesture,
+  GestureDetector,
+  GestureHandlerRootView,
+} from 'react-native-gesture-handler';
 
-export default class TarotsCards extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      activeIndex: 0,
-      carouselItems: [
+import Animated, {
+  useAnimatedStyle,
+  useDerivedValue,
+  useSharedValue,
+  withDecay,
+} from 'react-native-reanimated';
+const {width} = Dimensions.get('window');
+const {height} = Dimensions.get('window');
+
+const numberOfCards = 30;
+const imageUrl = `https://c8.alamy.com/comp/2BEJT76/a-single-tarot-card-the-page-of-pentacles-used-for-fortune-telling-2BEJT76.jpg`;
+
+const _size = 100;
+const _cardSize = {
+  width: _size,
+  height: _size * 1.6,
+  borderRadius: 12,
+};
+
+const cards = [...Array(numberOfCards).keys()].map(i => ({
+  key: `cards-${i}`,
+  uri: '../../assets/background.jpg',
+}));
+
+const TWO_PI = Math.PI * 2;
+const theta = TWO_PI / numberOfCards;
+const cardVisibilityPercentage = 0.7;
+const cardSize = _cardSize.width * cardVisibilityPercentage;
+const circleRadius = Math.max(
+  (cardSize * numberOfCards) / (2 * Math.PI),
+  width / 2,
+);
+const circleCircumPerence = TWO_PI * circleRadius;
+const changeFector = circleCircumPerence / width;
+
+const TCards = ({keys, card, index}) => {
+  return (
+    <View
+      key={keys}
+      style={{
+        position: 'absolute',
+        width: _cardSize.width,
+        height: circleRadius * 2,
+        transform: [
+          {
+            rotate: `${theta * index}rad`,
+          },
+        ],
+      }}>
+      <Image
+        style={{
+          width: _cardSize.width,
+          height: _cardSize.height,
+          borderRadius: _cardSize.borderRadius,
+          borderWidth: 2,
+          borderColor: '#fff',
+        }}
+        source={require(`../../assets/background.jpg`)}
+      />
+    </View>
+  );
+};
+
+function TarotWhile({cards}) {
+  const distance = useSharedValue(0);
+  const angel = useDerivedValue(() => {
+    return distance.value / circleCircumPerence;
+  });
+  const gesture = Gesture.Pan()
+    .onChange(ev => {
+      distance.value += ev.changeX * changeFector;
+    })
+    .onFinalize(ev => {
+      distance.value = withDecay({
+        velocity: ev.velocityX * changeFector,
+        velocityFactor: changeFector,
+      });
+    });
+
+  const stylez = useAnimatedStyle(() => {
+    return {
+      transform: [
         {
-          title: 'Item 1',
-          text: 'Text 1',
-        },
-        {
-          title: 'Item 2',
-          text: 'Text 2',
-        },
-        {
-          title: 'Item 3',
-          text: 'Text 3',
-        },
-        {
-          title: 'Item 4',
-          text: 'Text 4',
-        },
-        {
-          title: 'Item 5',
-          text: 'Text 5',
+          rotate: `${angel.value}rad`,
         },
       ],
     };
-  }
+  });
+  return (
+    <GestureDetector gesture={gesture}>
+      <Animated.View
+        style={[
+          {
+            width: circleRadius * 2,
+            height: circleRadius * 2,
+            borderRadius: circleRadius,
+            justifyContent: 'center',
+            alignItems: 'center',
+            position: 'absolute',
+            top: height - _cardSize.height * 1.5,
+          },
+          stylez,
+        ]}>
+        {cards.map((card, index) => {
+          return <TCards keys={card.key} card={card} index={index} />;
+        })}
+      </Animated.View>
+    </GestureDetector>
+  );
+}
 
-  _renderItem({item, index}) {
-    return (
+const TarotsCards = () => {
+  return (
+    <GestureHandlerRootView style={{flex: 1}}>
       <View
         style={{
-          backgroundColor: 'floralwhite',
-          borderRadius: 5,
-          height: 250,
-          padding: 50,
-          marginLeft: 25,
-          marginRight: 25,
+          justifyContent: 'center',
+          alignItems: 'center',
+          flex: 1,
+          backgroundColor: 'blue',
         }}>
-        <Text style={{fontSize: 30}}>{item.title}</Text>
-        <Text>{item.text}</Text>
+        <TarotWhile cards={cards} />
       </View>
-    );
-  }
-  // https://github.com/meliorence/react-native-snap-carousel
-  render() {
-    return (
-      <SafeAreaView
-        style={{flex: 1, backgroundColor: 'rebeccapurple', paddingTop: 50}}>
-        <View
-          style={{
-            flex: 1,
-            flexDirection: 'row',
-            alignItems: 'center',
-          }}>
-          <Carousel
-            ref={c => {
-              this._carousel = c;
-            }}
-            data={this.state.carouselItems}
-            renderItem={this._renderItem}
-            sliderWidth={300}
-            itemWidth={300}
-            loop={true}
-            layout={'default'}
-          />
-        </View>
-      </SafeAreaView>
-    );
-  }
-}
+    </GestureHandlerRootView>
+  );
+};
+
+export default TarotsCards;
