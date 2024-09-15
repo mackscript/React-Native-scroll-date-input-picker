@@ -22,7 +22,7 @@ const {height} = Dimensions.get('window');
 const numberOfCards = 40;
 const imageUrl = `https://c8.alamy.com/comp/2BEJT76/a-single-tarot-card-the-page-of-pentacles-used-for-fortune-telling-2BEJT76.jpg`;
 
-const _size = 130;
+const _size = 100;
 const _cardSize = {
   width: _size,
   height: _size * 1.6,
@@ -38,11 +38,10 @@ const TWO_PI = Math.PI * 2;
 const theta = TWO_PI / numberOfCards;
 const cardVisibilityPercentage = 0.7;
 const cardSize = _cardSize.width * cardVisibilityPercentage;
-const circleRadius = 600;
-// const circleRadius = Math.max(
-//   (cardSize * numberOfCards) / (2 * Math.PI),
-//   width / 2,
-// );
+const circleRadius = Math.max(
+  (cardSize * numberOfCards) / (2 * Math.PI),
+  width,
+);
 const circleCircumPerence = TWO_PI * circleRadius;
 const changeFector = circleCircumPerence / width;
 
@@ -75,40 +74,12 @@ const TCards = ({card, index, interpolatedIndex, activeIndex}) => {
         //     Extrapolation.CLAMP,
         //   ),
         // },
-        // {
-        //   translateY:
-        //     distanceFromActive < 0.5
-        //       ? -_cardSize.height / 5 // Only the active card will move up on Y-axis
-        //       : 0, // Other cards won't move
-        // },
-      ],
-    };
-  });
-  const stylez2 = useAnimatedStyle(() => {
-    const distanceFromActive = Math.abs(interpolatedIndex.value - index);
-
-    return {
-      borderWidth: distanceFromActive < 0.5 ? 2 : 1,
-      width: distanceFromActive < 0.5 ? 140 : _cardSize.width,
-      height: distanceFromActive < 0.5 ? 240 : _cardSize.height,
-      justifyContent: 'center',
-      alignItems: 'center',
-      bottom: distanceFromActive < 0.5 ? 20 : 0,
-      transform: [
-        // {
-        //   translateY: interpolate(
-        //     interpolatedIndex.value,
-        //     [index - 1, index, index + 1],
-        //     [0, -_cardSize.height / 3, 0],
-        //     Extrapolation.CLAMP,
-        //   ),
-        // },
-        // {
-        //   translateY:
-        //     distanceFromActive < 0.5
-        //       ? -_cardSize.height / 5 // Only the active card will move up on Y-axis
-        //       : 0, // Other cards won't move
-        // },
+        {
+          translateY:
+            distanceFromActive < 0.5
+              ? -_cardSize.height / 5 // Only the active card will move up on Y-axis
+              : 0, // Other cards won't move
+        },
       ],
     };
   });
@@ -120,7 +91,6 @@ const TCards = ({card, index, interpolatedIndex, activeIndex}) => {
           position: 'absolute',
           width: _cardSize.width,
           height: circleRadius * 2,
-          // height: _cardSize.height,
           // transform: [
           //   {
           //     rotate: `${theta * index}rad`,
@@ -129,19 +99,16 @@ const TCards = ({card, index, interpolatedIndex, activeIndex}) => {
         },
         stylez,
       ]}>
-      <TouchableOpacity
-        activeOpacity={0.9}
-        onPress={() => console.log('interpolatedIndex', index)}>
+      <TouchableOpacity onPress={() => console.log('interpolatedIndex', index)}>
         <Text>{card.key}</Text>
-        <Animated.Image
-          style={[
-            {
-              borderRadius: _cardSize.borderRadius,
-              borderWidth: 2,
-              borderColor: '#fff',
-            },
-            stylez2,
-          ]}
+        <Image
+          style={{
+            width: _cardSize.width,
+            height: _cardSize.height,
+            borderRadius: _cardSize.borderRadius,
+            borderWidth: 2,
+            borderColor: '#fff',
+          }}
           source={require(`../../assets/background.jpg`)}
         />
       </TouchableOpacity>
@@ -194,7 +161,7 @@ function TarotWhile({cards}) {
             justifyContent: 'center',
             alignItems: 'center',
             position: 'absolute',
-            top: (height / _cardSize.height) * 8,
+            top: height - _cardSize.height * 1.5,
           },
           stylez,
         ]}>
@@ -221,10 +188,8 @@ const TarotsCards = () => {
         style={{
           justifyContent: 'center',
           alignItems: 'center',
-          // flex: 1,
-          position: 'relative',
-          height: 380,
-          overflow: 'hidden',
+          flex: 1,
+          backgroundColor: 'blue',
         }}>
         <TarotWhile cards={cards} />
       </View>
