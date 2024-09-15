@@ -1,5 +1,5 @@
 import React, {useEffect} from 'react';
-import {View, Text, Dimensions, Image} from 'react-native';
+import {View, Text, Dimensions, Image, TouchableOpacity} from 'react-native';
 import {
   Gesture,
   GestureDetector,
@@ -45,7 +45,7 @@ const circleRadius = Math.max(
 const circleCircumPerence = TWO_PI * circleRadius;
 const changeFector = circleCircumPerence / width;
 
-const TCards = ({card, index, interpolatedIndex}) => {
+const TCards = ({card, index, interpolatedIndex, activeIndex}) => {
   // Remove `keys` from props
   const mounted = useSharedValue(0);
   useEffect(() => {
@@ -53,7 +53,11 @@ const TCards = ({card, index, interpolatedIndex}) => {
   }, []);
 
   const stylez = useAnimatedStyle(() => {
+    const distanceFromActive = Math.abs(interpolatedIndex.value - index);
+
     return {
+      zIndex: distanceFromActive < 0.5 ? 1 : 0, // Only the active card will have zIndex 1
+
       transform: [
         {
           // rotate: `${theta * index}rad`,
@@ -67,7 +71,7 @@ const TCards = ({card, index, interpolatedIndex}) => {
           translateY: interpolate(
             interpolatedIndex.value,
             [index - 1, index, index + 1],
-            [0, -_cardSize.height / 2, 0],
+            [0, -_cardSize.height / 3, 0],
             Extrapolation.CLAMP,
           ),
         },
@@ -90,16 +94,19 @@ const TCards = ({card, index, interpolatedIndex}) => {
         },
         stylez,
       ]}>
-      <Image
-        style={{
-          width: _cardSize.width,
-          height: _cardSize.height,
-          borderRadius: _cardSize.borderRadius,
-          borderWidth: 2,
-          borderColor: '#fff',
-        }}
-        source={require(`../../assets/background.jpg`)}
-      />
+      <TouchableOpacity onPress={() => console.log('interpolatedIndex', index)}>
+        <Text>{card.key}</Text>
+        <Image
+          style={{
+            width: _cardSize.width,
+            height: _cardSize.height,
+            borderRadius: _cardSize.borderRadius,
+            borderWidth: 2,
+            borderColor: '#fff',
+          }}
+          source={require(`../../assets/background.jpg`)}
+        />
+      </TouchableOpacity>
     </Animated.View>
   );
 };
@@ -156,6 +163,7 @@ function TarotWhile({cards}) {
         {cards.map((card, index) => {
           return (
             <TCards
+              activeIndex={activeIndex}
               interpolatedIndex={interpolatedIndex}
               key={card.key}
               card={card}
