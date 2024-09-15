@@ -57,7 +57,6 @@ const TCards = ({card, index, interpolatedIndex, activeIndex}) => {
 
     return {
       zIndex: distanceFromActive < 0.5 ? 1 : 0, // Only the active card will have zIndex 1
-
       transform: [
         {
           // rotate: `${theta * index}rad`,
@@ -67,13 +66,19 @@ const TCards = ({card, index, interpolatedIndex, activeIndex}) => {
             [0, theta * index],
           )}rad`,
         },
+        // {
+        //   translateY: interpolate(
+        //     interpolatedIndex.value,
+        //     [index - 1, index, index + 1],
+        //     [0, -_cardSize.height / 3, 0],
+        //     Extrapolation.CLAMP,
+        //   ),
+        // },
         {
-          translateY: interpolate(
-            interpolatedIndex.value,
-            [index - 1, index, index + 1],
-            [0, -_cardSize.height / 3, 0],
-            Extrapolation.CLAMP,
-          ),
+          translateY:
+            distanceFromActive < 0.5
+              ? -_cardSize.height / 5 // Only the active card will move up on Y-axis
+              : 0, // Other cards won't move
         },
       ],
     };
