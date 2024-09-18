@@ -57,7 +57,6 @@ const TCards = ({card, index, interpolatedIndex, activeIndex}) => {
     const distanceFromActive = Math.abs(interpolatedIndex.value - index);
 
     return {
-      zIndex: distanceFromActive < 0.5 ? 1 : 0, // Only the active card will have zIndex 1
       transform: [
         {
           // rotate: `${theta * index}rad`,
@@ -67,14 +66,14 @@ const TCards = ({card, index, interpolatedIndex, activeIndex}) => {
             [0, theta * index],
           )}rad`,
         },
-        // {
-        //   translateY: interpolate(
-        //     interpolatedIndex.value,
-        //     [index - 1, index, index + 1],
-        //     [0, -_cardSize.height / 3, 0],
-        //     Extrapolation.CLAMP,
-        //   ),
-        // },
+        {
+          translateY: interpolate(
+            interpolatedIndex.value,
+            [index - 1, index, index + 1],
+            [0, -_cardSize.height / 3, 0],
+            Extrapolation.CLAMP,
+          ),
+        },
         // {
         //   translateY:
         //     distanceFromActive < 0.5
@@ -82,6 +81,7 @@ const TCards = ({card, index, interpolatedIndex, activeIndex}) => {
         //       : 0, // Other cards won't move
         // },
       ],
+      zIndex: distanceFromActive < 0.5 ? 1 : 0, // Only the active card will have zIndex 1
     };
   });
   const stylez2 = useAnimatedStyle(() => {
@@ -93,7 +93,7 @@ const TCards = ({card, index, interpolatedIndex, activeIndex}) => {
       height: distanceFromActive < 0.5 ? 240 : _cardSize.height,
       justifyContent: 'center',
       alignItems: 'center',
-      bottom: distanceFromActive < 0.5 ? 20 : 0,
+      bottom: distanceFromActive < 0.5 ? 0 : 0,
       transform: [
         // {
         //   translateY: interpolate(
@@ -165,7 +165,7 @@ function TarotWhile({cards}) {
 
   const gesture = Gesture.Pan()
     .onChange(ev => {
-      distance.value += ev.changeX * changeFector;
+      distance.value += ev.changeX * changeFector - 10;
     })
     .onFinalize(ev => {
       distance.value = withDecay({
@@ -194,7 +194,7 @@ function TarotWhile({cards}) {
             justifyContent: 'center',
             alignItems: 'center',
             position: 'absolute',
-            top: (height / _cardSize.height) * 8,
+            top: (height / _cardSize.height) * 20,
           },
           stylez,
         ]}>
@@ -223,7 +223,7 @@ const TarotsCards = () => {
           alignItems: 'center',
           // flex: 1,
           position: 'relative',
-          height: 380,
+          height: 700,
           overflow: 'hidden',
         }}>
         <TarotWhile cards={cards} />
